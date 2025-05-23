@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Excel AI</title>
+    <base target="_top">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 15px;
+        background-color: #f9f9f9;
+      }
+      h3 {
+        color: #2c3e50;
+      }
+      textarea {
+        width: 100%;
+        height: 70px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px;
+        font-size: 16px;
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #output {
+        margin-top: 15px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 4px;
+        min-height: 50px;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
+      .error {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>🤖 Excel AI Assistant</h3>
+
+    <label for="cmd">🔤 Hinglish Command:</label>
+    <textarea id="cmd" placeholder="e.g. total sales ka sum lagao"></textarea>
+
+    <button onclick="sendCommand()">🚀 Run Command</button>
+
+    <div id="output">⌛ Waiting for input...</div>
+
+    <select id="example" title="Example command selector" onchange="document.getElementById('cmd').value = this.value">
+  <option disabled selected>Select a command</option>
+  <option value="sales ka sum">Sales ka sum</option>
+  <option value="bar chart of revenue">Bar chart of revenue</option>
+  <option value="pivot table for month">Pivot table for month</option>
+  <option value="macro for filter">Macro for filter</option>
+</select>
+
+    <script>
+      function sendCommand() {
+        const cmd = document.getElementById("cmd").value.trim();
+        const outputDiv = document.getElementById("output");
+
+        if (!cmd) {
+          outputDiv.innerHTML = "<span class='error'>❗ कृपया कोई कमांड लिखें।</span>";
+          return;
+        }
+
+        outputDiv.innerText = "⏳ AI processing your command...";
+
+        google.script.run.withSuccessHandler(result => {
+          if (result && result.output) {
+            outputDiv.innerText = "✅ Result:\n" + result.output;
+          } else {
+            outputDiv.innerHTML = "<span class='error'>⚠️ AI ने कोई output नहीं दिया।</span>";
+          }
+        }).withFailureHandler(err => {
+          outputDiv.innerHTML = "<span class='error'>❌ Error: " + err.message + "</span>";
+        }).callAI(cmd);
+      }
+    </script>
+  </body>
+</html>
