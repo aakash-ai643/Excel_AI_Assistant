@@ -9,6 +9,11 @@ import xlwings as xw
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import shutil
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
 
 # 🔄 Load Hinglish-understanding AI model
 print("🔄 Loading phi-1_5 model...")
@@ -136,3 +141,11 @@ def process_live_excel():
 
 if __name__ == "__main__":
     process_live_excel()
+
+class Command(BaseModel):
+    instruction: str
+
+@app.post("/ai-command")
+def handle_ai_command(cmd: Command):
+    formula = generate_formula(cmd.instruction)
+    return {"output": formula}
